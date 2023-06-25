@@ -1,11 +1,18 @@
 <template>
-  <div>App根组件</div>
+  <el-config-provider
+    :loacl="local"
+    :message="config">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
 <script setup>
-
+import { reactive } from 'vue'
+import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+const local = zhCn
+const config = reactive({
+  max: 1
+})
 </script>
 
-<style lang="scss">
-</style>
-
+<style lang="scss"></style>
