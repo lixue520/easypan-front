@@ -1,5 +1,5 @@
 <template>
-  <div>布局</div>
+  <div>Recycle</div>
 </template>
 
 <script setup>

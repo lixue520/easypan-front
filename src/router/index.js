@@ -14,7 +14,62 @@ const router = createRouter({
     }, {
       path: '/',
       name: 'layout',
-      component: () => import('@/views/Layout.vue'),
+      component: () => import('@/views/FrameWork.vue'),
+      children:[
+        {
+          path:'/',
+          redirect:'/main/all'
+        },{
+          path:'/main/:category',
+          name:'首页',
+          meta:{
+            needLogin:true,
+            menuCode:'main'
+          },
+          component:()=>import('@/views/main/Main.vue')
+        },{
+          path:'/share',
+          name:'分享',
+          meta:{
+            needLogin:true,
+            menuCode:'share'
+          },
+          component:()=>import('@/views/share/Share.vue')
+        },{
+          path:'/recycle',
+          name:'回收站',
+          meta:{
+            needLogin:true,
+            menuCode:'recycle'
+          },
+          component:()=>import('@/views/recycle/Recycle.vue')
+        },{
+          path:'/settings/sysSetting',
+          name:'系统设置',
+          meta:{
+            needLogin:true,
+            menuCode:'settings'
+          },
+          component:()=>import('@/views/admin/SysSetting.vue')
+        },{
+          path:'/settings/userList',
+          name:'用户管理',
+          meta:{
+            needLogin:true,
+            menuCode:'settings'
+          },
+          component:()=>import('@/views/admin/UserList.vue')
+        },
+        {
+          path:'/settings/fileList',
+          name:'用户文件',
+          meta:{
+            needLogin:true,
+            menuCode:'settings'
+          },
+          component:()=>import('@/views/admin/FileList.vue')
+        },
+      ]
     }
   ]
 })
