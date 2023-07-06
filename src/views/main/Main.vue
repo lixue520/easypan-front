@@ -15,7 +15,7 @@
           </el-button>
         </el-upload>
       </div>
-      <el-button type="success">
+      <el-button type="success" @click="newFolder">
         <span class="iconfont icon-folder-add"></span>
         新建文件夹
       </el-button>
@@ -41,7 +41,7 @@
     <div class="file-list">
       <Table
         ref="dataTableRef"
-        :colums="colums"
+        :columns="columns"
         :dataSource="tableData"
         :fetch="loadDataList"
         :initFetch="true"
@@ -55,28 +55,40 @@
             </template>
             <template v-else>
               <Icon v-if="row.folderType == 0" :fileType="row.fileType"></Icon>
-              <Icon v-else :fileType="0"></Icon>
+              <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
             </template>
-            <span class="file-name" :title="row.fileName">
+            <span class="file-name" v-if="!row.showEdit" :title="row.fileName">
               <span>{{ row.fileName }}</span>
-              <span v-if="row.status == 1" class="transfer-status">转码中</span>
-              <span v-if="row.status == 1" class="transfer-status transfer-fail">失败</span>
-              <div class="edit-panel">
-                
-              </div>
-              <span class="op">
-                <template v-if="row.showOp && row.fileId && row.status == 2">
-                  <span class="iconfont icon-sharel">分享</span>
-                  <span class="iconfont icon-download" v-if="row.folderType==0">下载</span>
-                  <span class="icofont icon-del">删除</span>
-                  <span class="icofont icon-edit">重命名</span>
-                  <span class="icofont icon-move">移动</span>
-                </template>
-              </span>
+              <span v-if="row.status == 0" class="transfer-status">转码中</span>
+              <span v-if="row.status == 1" class="transfer-status transfer-fail">转码失败</span>
+            </span>
+            <div class="edit-panel" v-if="row.showEdit">
+              <el-input
+                v-model.trim="row.fileNameReal"
+                ref="editNameRef"
+                :maxLength="190"
+                @keyup.enter="saveNameEdit(index)"
+              >
+                <template #suffix>{{ row.fileSuffix }}</template>
+              </el-input>
+              <span
+                :class="['iconfont icon-right1', row.fileNameReal ? '' : 'no-allow']"
+                @click="saveNameEdit(index)"
+              ></span>
+              <span class="iconfont icon-error" @click="cancelNameEdit(index)"></span>
+            </div>
+            <span class="op">
+              <template v-if="row.showOp && row.fileId && row.status == 2">
+                <span class="iconfont icon-share1">分享</span>
+                <span class="iconfont icon-download" v-if="row.folderType == 0">下载</span>
+                <span class="iconfont icon-del">删除</span>
+                <span class="iconfont icon-edit" @click="editFileName(index)">重命名</span>
+                <span class="iconfont icon-move">移动</span>
+              </template>
             </span>
           </div>
         </template>
-        <template #fileSize="{index,row}">
+        <template #fileSize="{ index, row }">
           <span v-if="row.fileSize">{{ Utils.sizeToStr(row.fileSize) }}</span>
         </template>
       </Table>
@@ -85,11 +97,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance } from 'vue'
+import { ref, reactive, getCurrentInstance, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const router = useRouter()
+const emit = defineEmits(['addFile'])
+const addFile = (fileData) => {
+  emit('addFile', {
+    file: fileData.file,
+    filePid: currentFolder.value.fileId,
+  })
+}
+const currentFolder = ref({ fileId: 0 })
 const api = {
   loadDataList: '/file/loadDataList',
   rename: '/file/rename',
@@ -100,7 +120,7 @@ const api = {
   createDownloadUrl: '/file/createDownloadUrl',
   downLoad: '/api/file/download',
 }
-const colums = [
+const columns = [
   {
     label: '文件名',
     prop: 'fileName',
@@ -119,6 +139,7 @@ const colums = [
   },
 ]
 const tableData = ref({})
+const dataTableRef = ref()
 const tableOptions = ref({
   extHeight: 50,
   selectType: 'checkbox',
@@ -130,7 +151,7 @@ const loadDataList = async () => {
     pageNo: tableData.value.pageNo,
     pageSize: tableData.value.pageSize,
     fileNameFuzzy: fileNameFuzzy.value,
-    // category:category.value,
+    category: category.value,
     filePid: 0,
   }
   if (params.category != 'all') {
@@ -145,16 +166,98 @@ const loadDataList = async () => {
   }
   tableData.value = result.data
 }
+// 多选
+const selectFileIdList = ref([])
 const rowSelected = () => {}
 // 展示操作按钮
-const showOP=(row)=>{
-  tableData.value.list.forEach(item=>{
-    item.showOp=false
+const showOP = (row) => {
+  tableData.value.list.forEach((item) => {
+    item.showOp = false
   })
-  row.showOp=true
+  row.showOp = true
 }
-const cancelShowOp=(row)=>{
-  row.showOP=false
+const cancelShowOp = (row) => {
+  row.showOP = false
+}
+
+const editing = ref(false)
+const editNameRef = ref()
+// 新建文件夹
+const newFolder = () => {
+  if (editing.value) {
+    return
+  }
+  // 新建文件夹时其他文件禁止编辑
+  tableData.value.list.forEach((element) => {
+    element.showEdit = false
+  })
+  editing.value = true
+  tableData.value.list.unshift({
+    showEdit: true,
+    fileType: 0,
+    fileId: '',
+    filePid: 0,
+  })
+  nextTick(() => {
+    editNameRef.value.focus()
+  })
+}
+const cancelNameEdit = (index) => {
+  const fileData = tableData.value.list[index]
+  if (fileData.fileId) {
+    fileData.showEdit = false
+  } else {
+    tableData.value.list.splice(index, 1)
+  }
+  editing.value = false
+}
+const saveNameEdit = async (index) => {
+  const { fileId, filePid, fileNameReal } = tableData.value.list[index]
+  if (fileNameReal == '' || fileNameReal.indexOf('/') != -1) {
+    proxy.Message.error('文件名不能为空且不能含斜杠')
+    return
+  }
+  let url = api.rename
+  if (fileId == '') {
+    url = api.newFoloder
+  }
+  let result = await proxy.Request({
+    url: url,
+    params: {
+      fileId: fileId,
+      filePid: filePid,
+      fileName: fileNameReal,
+    },
+  })
+  if (!result) {
+    return
+  }
+  tableData.value.list[index] = result.data
+  editing.value = false
+}
+const editFileName = (index) => {
+  //  新建文件夹时重命名其他文件应该把新建的文件夹删除
+  if (tableData.value.list[0].fileId == '') {
+    tableData.value.list.splice(0, 1)
+    index--
+  }
+  tableData.value.list.forEach((element) => {
+    element.showEdit = false
+  })
+  let currentData = tableData.value.list[index]
+  currentData.showEdit = true
+  // 编辑文件
+  if (currentData.folderType == 0) {
+    currentData.fileNameReal = currentData.fileName.substring(0, currentData.fileName.indexOf('.'))
+    currentData.fileSuffix = currentData.fileName.substring(currentData.fileName.indexOf('.'))
+  } else {
+    currentData.fileNameReal = currentData.fileName
+    currentData.fileSuffix = ''
+  }
+  editing.value = true
+  nextTick(() => {
+    editNameRef.value.focus()
+  })
 }
 </script>
 
