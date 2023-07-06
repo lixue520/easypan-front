@@ -9,7 +9,7 @@
         <el-popover
           :width="800"
           trigger="click"
-          :v-model:visible="true"
+          v-model:visible="showUploader"
           :offset="20"
           transition="none"
           :hide-after="0"
@@ -18,7 +18,9 @@
           <template #reference>
             <span class="iconfont icon-transfer"></span>
           </template>
-          <template #default> 这里是上传区域 </template>
+          <template #default>
+            <Uploader ref="uploaderRef" @uploadCallback="uploadCallbackHandler"></Uploader>
+          </template>
         </el-popover>
         <el-dropdown>
           <div class="user-info">
@@ -73,8 +75,9 @@
         </div>
       </div>
       <div class="body-content">
+        <!-- 将子路由定义为组件，否则子路由调用父路由的内容没法调用 -->
         <router-view v-slot="{ Component }">
-          <component :is="Component"></component>
+          <component :is="Component" @addFile="addFile"></component>
         </router-view>
       </div>
     </div>
@@ -84,15 +87,31 @@
 </template>
 
 <script setup>
+import Uploader from '@/views/main/Uploader.vue'
 import UpdateAvatar from './UpdateAvatar.vue'
 import UpdatePassword from './UpdatePassword.vue'
-import { ref, reactive, getCurrentInstance, watch } from 'vue'
+import { ref, reactive, getCurrentInstance, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 const { proxy } = getCurrentInstance()
 const route = useRoute()
 const router = useRouter()
 const api = {
   logout: '/logout',
+}
+const showUploader = ref(false)
+const uploaderRef = ref()
+// 添加文件
+const addFile = (data) => {
+  const { file, filePid } = data
+  showUploader.value = true
+  uploaderRef.value.addFile(file,filePid)
+}
+
+// 上传文件回调
+const uploadCallbackHandler=()=>{
+  nextTick(()=>{
+    // TODO更新用户空间
+  })
 }
 const userInfo = ref(proxy.VueCookies.get('userInfo'))
 const timestamp = ref(0)

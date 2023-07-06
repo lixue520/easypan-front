@@ -61,5 +61,8 @@ const getImage=()=>{
   text-align: center;
   display: inline-block;
   border-radius: 3px;
+  img{
+    width: 100%;
+  }
 }
 </style>

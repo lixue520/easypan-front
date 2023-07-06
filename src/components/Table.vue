@@ -37,7 +37,7 @@
             :width="column.width"
           >
             <template #default="scope">
-              <slot :name="column.scopedSlots" :index="scope.$index" :row="scope.row"> </slot>
+              <slot :name="column.scopedSlots" :index="scope.$index" :row="scope.row"></slot>
             </template>
           </el-table-column>
         </template>
@@ -72,7 +72,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 const layout = computed(() => {
   return `total, ${props.showPageSize ? 'sizes' : ''} 
     prev, pager, next, jumper`
@@ -91,7 +91,10 @@ const props = defineProps({
   options: {
     type: Object,
     default: {
-      tableHeight: 0,
+      tableHeight: null,
+      border: false,
+      stripe: true,
+      extHeight: 0,
       showIndex: false,
     },
   },

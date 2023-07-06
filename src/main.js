@@ -14,6 +14,7 @@ import Dialog from '@/components/Dialog.vue'
 import Avatar from '@/components/Avatar.vue'
 import Table from '@/components/Table.vue'
 import Icon from '@/components//Icon.vue'
+import NoData from '@/components/NoData.vue'
 // 工具
 import Verify from '@/utils/Verify.js'
 import Request from '@/utils/Request.js'
@@ -28,6 +29,7 @@ app.component('Dialog', Dialog)
 app.component('Avatar', Avatar)
 app.component('Table',Table)
 app.component('Icon',Icon)
+app.component('NoData',NoData)
 app.config.globalProperties.Verify = Verify
 app.config.globalProperties.Message = Message
 app.config.globalProperties.Request = Request
