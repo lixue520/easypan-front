@@ -37,7 +37,7 @@
     </div>
     <!-- 导航 -->
     <Navigation ref="navigationref" @navChange="navChange"></Navigation>
-    <div class="file-list">
+    <div class="file-list" v-if="tableData.list && tableData.list.length > 0">
       <Table
         ref="dataTableRef"
         :columns="columns"
@@ -91,6 +91,29 @@
           <span v-if="row.fileSize">{{ Utils.sizeToStr(row.fileSize) }}</span>
         </template>
       </Table>
+    </div>
+    <div v-else class="no-data">
+      <div class="no-data-inner">
+        <Icon iconName="no_data" :width="120" fit="fill"></Icon>
+        <div class="tips">当前目录为空，上传你的第一个文件吧</div>
+        <div class="op-list">
+          <el-upload
+            :show-file-list="false"
+            :width-credentials="true"
+            :multiple="true"
+            :http-request="addFile"
+          >
+            <div class="op-item">
+              <Icon iconName="file" :width="60"></Icon>
+              <div>上传文件</div>
+            </div>
+          </el-upload>
+          <div class="op-item" v-if="category=='all'" @click="newFolder">
+            <Icon iconName="folder" :width="60"></Icon>
+            <div>新建目录</div>
+          </div>
+        </div>
+      </div>
     </div>
     <FoldersSelect ref="foldersSelectRef" @folderSelect="moveFolderDone"></FoldersSelect>
   </div>
@@ -344,8 +367,8 @@ const preview = (data) => {
 
 const navChange = (data) => {
   const { categoryId, curFolder } = data
-  category.value=categoryId
-  currentFolder.value=curFolder
+  category.value = categoryId
+  currentFolder.value = curFolder
   loadDataList()
 }
 </script>
