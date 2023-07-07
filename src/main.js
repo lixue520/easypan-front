@@ -15,6 +15,8 @@ import Avatar from '@/components/Avatar.vue'
 import Table from '@/components/Table.vue'
 import Icon from '@/components//Icon.vue'
 import NoData from '@/components/NoData.vue'
+import FoldersSelect from '@/components/FoldersSelect.vue';
+import Navigation from '@/components/Navigation.vue'
 // 工具
 import Verify from '@/utils/Verify.js'
 import Request from '@/utils/Request.js'
@@ -30,6 +32,10 @@ app.component('Avatar', Avatar)
 app.component('Table',Table)
 app.component('Icon',Icon)
 app.component('NoData',NoData)
+app.component('FoldersSelect',FoldersSelect)
+app.component('Navigation',Navigation)
+
+// 配置全局方法
 app.config.globalProperties.Verify = Verify
 app.config.globalProperties.Message = Message
 app.config.globalProperties.Request = Request
