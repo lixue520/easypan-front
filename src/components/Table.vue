@@ -74,8 +74,7 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 const layout = computed(() => {
-  return `total, ${props.showPageSize ? 'sizes' : ''} 
-    prev, pager, next, jumper`
+  return `total, ${props.showPageSize ? 'sizes' : ''} , prev, pager, next, jumper`
 })
 const emit = defineEmits(['rowSelected', 'rowClick'])
 const props = defineProps({

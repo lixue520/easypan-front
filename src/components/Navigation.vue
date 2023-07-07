@@ -55,7 +55,7 @@ const currentFolder = ref({
 const openFolder = (data) => {
   const { fileId, fileName } = data
   const folder = {
-    filaName: fileName,
+    fileName: fileName,
     fileId: fileId,
   }
   folderList.value.push(folder)
@@ -65,30 +65,31 @@ const openFolder = (data) => {
 defineExpose({ openFolder })
 
 // 放回上一级
-const backParent =()=>{
-  let currentIndex =null
-  for(let i=0;i<folderList.value.length;i++){
-    if(folderList.value[i].fileId==currentFolder.value.fileId){
-      currentIndex=i
+const backParent = () => {
+  let currentIndex = null
+  for (let i = 0; i < folderList.value.length; i++) {
+    if (folderList.value[i].fileId == currentFolder.value.fileId) {
+      currentIndex = i
       break
     }
   }
-  setCurrentFolder(currentIndex-1)
+  setCurrentFolder(currentIndex - 1)
 }
 
 // 点击导航设置当前目录
-const setCurrentFolder =(index)=>{
-  if(index==-1){
-    currentFolder.value={fileId:'0'}
-    folderList.value=[]
-  }else{
-    currentFolder.value=folderList.value[index]
-    folderList.value.splice(index+1,folderList.value.length)
+const setCurrentFolder = (index) => {
+  if (index == -1) {
+    currentFolder.value = { fileId: '0' }
+    folderList.value = []
+  } else {
+    currentFolder.value = folderList.value[index]
+    folderList.value.splice(index + 1, folderList.value.length)
   }
   setPath()
 }
 const setPath = () => {
   if (!props.watchPath) {
+    doCallback()
     // TODO 设置不监听路由回调方法
     return
   }

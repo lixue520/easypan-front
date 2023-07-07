@@ -28,13 +28,13 @@
         批量移动
       </el-button>
       <div class="search-panel">
-        <el-input clearable placeholder="请输入文件名搜索">
+        <el-input clearable placeholder="请输入文件名搜索" v-model="fileNameFuzzy" @keyup.enter="search">
           <template #suffix>
-            <i class="iconfont -icon-search"></i>
+            <i class="iconfont -icon-search" @click="search"></i>
           </template>
         </el-input>
       </div>
-      <div class="iconfont icon-refresh"></div>
+      <div class="iconfont icon-refresh" @click="reload"></div>
     </div>
     <!-- 导航 -->
     <Navigation ref="navigationref" @navChange="navChange"></Navigation>
@@ -149,7 +149,7 @@ const api = {
   newFoloder: '/file/newFoloder',
   getFoloderInfo: '/file/getFoloderInfo',
   delFile: '/file/delFile',
-  changeFileDolder: '/file/changeFileDolder',
+  changeFileFolder: '/file/changeFileFolder',
   createDownloadUrl: '/file/createDownloadUrl',
   downLoad: '/api/file/download',
 }
@@ -175,6 +175,11 @@ const columns = [
     width: 200,
   },
 ]
+// 搜索
+const search=()=>{
+  showLoading.value=true
+  loadDataList()
+}
 const tableData = ref({})
 const dataTableRef = ref()
 const tableOptions = ref({
@@ -361,7 +366,7 @@ const moveFolderDone = async (folderId) => {
     fileIdsArray = fileIdsArray.concat(selectFileIdList.value)
   }
   let result = await proxy.Request({
-    url: api.changeFileDolder,
+    url: api.changeFileFolder,
     params: {
       fileIds: fileIdsArray,
       filePid: folderId,
@@ -370,7 +375,7 @@ const moveFolderDone = async (folderId) => {
   if (!result) {
     return
   }
-  foldersSelectRef.value.colse()
+  foldersSelectRef.value.close()
   loadDataList()
 }
 // 预览

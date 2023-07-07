@@ -8,15 +8,17 @@
       :showCancel="false"
       @close="dialogConfig.show = false"
     >
-      <div class="navigation-panel"></div>
+      <div class="navigation-panel">
+        <Navigation ref="navigationRef" @navChange="navChange" :watchPath="false"></Navigation>
+      </div>
       <div class="folder-list" v-if="folderList.length > 0">
         <div class="folder-item" v-for="item in folderList" @click="selectFolder(item)">
           <Icon :fileType="0"></Icon>
           <span class="fileName">{{ item.fileName }}</span>
         </div>
       </div>
-      <div v-else>
-        移动<span>{{ currentFolder.fileName }}</span>
+      <div class="tips" v-else>
+        移动到<span>{{ currentFolder.fileName }}</span>
       </div>
     </Dialog>
   </div>
@@ -34,7 +36,7 @@ const dialogConfig = ref({
   buttons: [
     {
       type: 'primary',
-      text: '移动',
+      text: '移动到此',
       click: (e) => {
         folderSelect()
       },
@@ -59,8 +61,8 @@ const loadAllFolder = async () => {
   }
   folderList.value = result.data
 }
-const close =()=>{
-  dialogConfig.value.show=false
+const close = () => {
+  dialogConfig.value.show = false
 }
 const showFolderDialog = (currentFolder) => {
   dialogConfig.value.show = true
@@ -69,16 +71,24 @@ const showFolderDialog = (currentFolder) => {
 }
 defineExpose({
   showFolderDialog,
-  close
+  close,
 })
 // 选择目录
-const selectFolder =(data)=>{
-
+const navigationRef = ref()
+const selectFolder = (data) => {
+  navigationRef.value.openFolder(data)
 }
 // 确定选择目录
-const emit=defineEmits(['folderSelect'])
-const folderSelect=()=>{
-  emit('folderSelect',filePid.value)
+const emit = defineEmits(['folderSelect'])
+const folderSelect = () => {
+  emit('folderSelect', filePid.value)
+}
+// 导航改变回调
+const navChange = (data) => {
+  const { curFolder } = data
+  currentFolder.value = curFolder
+  filePid.value = curFolder.fileId
+  loadAllFolder()
 }
 </script>
 
