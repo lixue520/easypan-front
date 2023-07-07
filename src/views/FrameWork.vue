@@ -77,7 +77,7 @@
       <div class="body-content">
         <!-- 将子路由定义为组件，否则子路由调用父路由的内容没法调用 -->
         <router-view v-slot="{ Component }">
-          <component :is="Component" @addFile="addFile"></component>
+          <component ref="routerViewRef" :is="Component" @addFile="addFile"></component>
         </router-view>
       </div>
     </div>
@@ -107,9 +107,11 @@ const addFile = (data) => {
   uploaderRef.value.addFile(file,filePid)
 }
 
+const routerViewRef=ref()
 // 上传文件回调
 const uploadCallbackHandler=()=>{
   nextTick(()=>{
+    routerViewRef.value.reload()
     // TODO更新用户空间
   })
 }

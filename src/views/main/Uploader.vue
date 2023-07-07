@@ -146,7 +146,6 @@ const chunkSize = 1024 * 1024
 const fileList = ref([])
 const delList = ref([])
 const addFile = async (file, filePid) => {
-  console.log(file, filePid)
   const fileItem = {
     // 文件信息
     file: file,
@@ -298,7 +297,7 @@ const uploadFile = async (uid, chunkIndex) => {
     currentFile.status = STATUS[updtateResult.data.status].value
     if (
       updtateResult.data.status == STATUS.upload_seconds.value ||
-      updtateResult.data.start == STATUS.upload_finish.value
+      updtateResult.data.status == STATUS.upload_finish.value
     ) {
       currentFile.uploadProgress = 100
       emit('uploadCallback')

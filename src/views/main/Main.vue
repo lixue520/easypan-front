@@ -108,7 +108,7 @@
               <div>上传文件</div>
             </div>
           </el-upload>
-          <div class="op-item" v-if="category=='all'" @click="newFolder">
+          <div class="op-item" v-if="category == 'all'" @click="newFolder">
             <Icon iconName="folder" :width="60"></Icon>
             <div>新建目录</div>
           </div>
@@ -132,6 +132,13 @@ const addFile = (fileData) => {
     filePid: currentFolder.value.fileId,
   })
 }
+// 添加文件回调
+const reload = () => {
+  showLoading.value=true
+  loadDataList()
+}
+defineExpose({ reload })
+// 当前目录
 const currentFolder = ref({ fileId: 0 })
 const api = {
   loadDataList: '/file/loadDataList',
@@ -168,6 +175,7 @@ const tableOptions = ref({
   selectType: 'checkbox',
 })
 const fileNameFuzzy = ref()
+const showLoading=ref(true)
 const category = ref()
 const loadDataList = async () => {
   let params = {
@@ -182,6 +190,7 @@ const loadDataList = async () => {
   }
   let result = await proxy.Request({
     url: api.loadDataList,
+    showLoading:showLoading.value,
     params: params,
   })
   if (!result) {
