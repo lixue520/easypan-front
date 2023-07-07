@@ -7,6 +7,7 @@
           :width-credentials="true"
           :multiple="true"
           :http-request="addFile"
+          :accept="fileAccept"
         >
           <el-button type="primary">
             <span class="iconfont icon-upload"></span>
@@ -102,6 +103,7 @@
             :width-credentials="true"
             :multiple="true"
             :http-request="addFile"
+            :accept="fileAccept"
           >
             <div class="op-item">
               <Icon iconName="file" :width="60"></Icon>
@@ -120,7 +122,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, getCurrentInstance, nextTick } from 'vue'
+import CategoryInfo from '@/js/CategoryInfo.js'
+import { ref, reactive, getCurrentInstance, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 const { proxy } = getCurrentInstance()
 const route = useRoute()
@@ -134,7 +137,7 @@ const addFile = (fileData) => {
 }
 // 添加文件回调
 const reload = () => {
-  showLoading.value=true
+  showLoading.value = true
   loadDataList()
 }
 defineExpose({ reload })
@@ -150,6 +153,10 @@ const api = {
   createDownloadUrl: '/file/createDownloadUrl',
   downLoad: '/api/file/download',
 }
+const fileAccept = computed(() => {
+  const categoryItem = CategoryInfo[category.value]
+  return categoryItem ? categoryItem.accept : '*'
+})
 const columns = [
   {
     label: '文件名',
@@ -175,7 +182,7 @@ const tableOptions = ref({
   selectType: 'checkbox',
 })
 const fileNameFuzzy = ref()
-const showLoading=ref(true)
+const showLoading = ref(true)
 const category = ref()
 const loadDataList = async () => {
   let params = {
@@ -190,7 +197,7 @@ const loadDataList = async () => {
   }
   let result = await proxy.Request({
     url: api.loadDataList,
-    showLoading:showLoading.value,
+    showLoading: showLoading.value,
     params: params,
   })
   if (!result) {
