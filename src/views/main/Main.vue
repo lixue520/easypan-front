@@ -384,6 +384,11 @@ const preview = (data) => {
   if (data.folderType == 1) {
     navigationref.value.openFolder(data)
   }
+  // 文件
+  if(data.status!==2){
+    proxy.Message.warning("文件正在转码中，无法预览")
+    return
+  }
 }
 
 const navChange = (data) => {

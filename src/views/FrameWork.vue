@@ -70,7 +70,22 @@
           </div>
           <div class="space-info">
             <div>空间使用</div>
-            <div class="percent"></div>
+            <div class="percent">
+              <el-progress
+                :percentage="
+                  Math.floor((useSpaceInfo.useSpace / useSpaceInfo.totalSpace) * 10000) / 100
+                "
+                color="#409eff"
+              ></el-progress>
+            </div>
+            <div class="space-use">
+              <div class="use">
+                {{ Utils.sizeToStr(useSpaceInfo.useSpace) }}/{{
+                  Utils.sizeToStr(useSpaceInfo.totalSpace)
+                }}
+              </div>
+              <div class="iconfont icon-refresh" @click="getUserSpace"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -97,6 +112,7 @@ const route = useRoute()
 const router = useRouter()
 const api = {
   logout: '/logout',
+  getUseSpace: '/getUseSpace',
 }
 const showUploader = ref(false)
 const uploaderRef = ref()
@@ -104,15 +120,16 @@ const uploaderRef = ref()
 const addFile = (data) => {
   const { file, filePid } = data
   showUploader.value = true
-  uploaderRef.value.addFile(file,filePid)
+  uploaderRef.value.addFile(file, filePid)
 }
 
-const routerViewRef=ref()
+const routerViewRef = ref()
 // 上传文件回调
-const uploadCallbackHandler=()=>{
-  nextTick(()=>{
+const uploadCallbackHandler = () => {
+  nextTick(() => {
     routerViewRef.value.reload()
     // TODO更新用户空间
+    getUserSpace()
   })
 }
 const userInfo = ref(proxy.VueCookies.get('userInfo'))
@@ -257,6 +274,22 @@ const logout = async () => {
     router.push('/login')
   })
 }
+// 使用空间
+const useSpaceInfo = ref({
+  useSpace: 0,
+  totalSpace: 1,
+})
+const getUserSpace = async () => {
+  let result = await proxy.Request({
+    url: api.getUseSpace,
+    showLoading: false,
+  })
+  if (!result) {
+    return
+  }
+  useSpaceInfo.value = result.data
+}
+getUserSpace()
 </script>
 <style lang="scss" scoped>
 .header {
