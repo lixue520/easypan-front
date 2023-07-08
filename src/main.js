@@ -18,6 +18,7 @@ import NoData from '@/components/NoData.vue'
 import FoldersSelect from '@/components/FoldersSelect.vue';
 import Navigation from '@/components/Navigation.vue'
 import Preview from '@/components/preview/Preview.vue'
+import Window from '@/components/Window.vue'
 // 工具
 import Verify from '@/utils/Verify.js'
 import Request from '@/utils/Request.js'
@@ -36,6 +37,7 @@ app.component('NoData',NoData)
 app.component('FoldersSelect',FoldersSelect)
 app.component('Navigation',Navigation)
 app.component('Preview',Preview)
+app.component('Window',Window)
 
 // 配置全局方法
 app.config.globalProperties.Verify = Verify

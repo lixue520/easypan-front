@@ -28,7 +28,12 @@
         批量移动
       </el-button>
       <div class="search-panel">
-        <el-input clearable placeholder="请输入文件名搜索" v-model="fileNameFuzzy" @keyup.enter="search">
+        <el-input
+          clearable
+          placeholder="请输入文件名搜索"
+          v-model="fileNameFuzzy"
+          @keyup.enter="search"
+        >
           <template #suffix>
             <i class="iconfont -icon-search" @click="search"></i>
           </template>
@@ -118,6 +123,8 @@
       </div>
     </div>
     <FoldersSelect ref="foldersSelectRef" @folderSelect="moveFolderDone"></FoldersSelect>
+    <!-- 预览 -->
+    <Preview ref="previewRef"></Preview>
   </div>
 </template>
 
@@ -176,8 +183,8 @@ const columns = [
   },
 ]
 // 搜索
-const search=()=>{
-  showLoading.value=true
+const search = () => {
+  showLoading.value = true
   loadDataList()
 }
 const tableData = ref({})
@@ -379,16 +386,18 @@ const moveFolderDone = async (folderId) => {
   loadDataList()
 }
 // 预览
+const previewRef=ref()
 const navigationref = ref()
 const preview = (data) => {
   if (data.folderType == 1) {
     navigationref.value.openFolder(data)
   }
   // 文件
-  if(data.status!==2){
-    proxy.Message.warning("文件正在转码中，无法预览")
+  if (data.status !== 2) {
+    proxy.Message.warning('文件未完成转码，无法预览')
     return
   }
+  previewRef.value.showPreview(data,0)
 }
 
 const navChange = (data) => {
