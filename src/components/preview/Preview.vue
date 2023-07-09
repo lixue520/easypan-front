@@ -17,10 +17,23 @@
     <PreviewExcel :url="url" v-if="fileInfo.fileType == 6"></PreviewExcel>
     <PreviewPdf :url="url" v-if="fileInfo.fileType == 4"></PreviewPdf>
     <PreviewTxt :url="url" v-if="fileInfo.fileType == 7 || fileInfo.fileType == 8"></PreviewTxt>
+    <PreviewMusic
+      :url="url"
+      :fileName="fileInfo.fileName"
+      v-if="fileInfo.fileCategory == 2"
+    ></PreviewMusic>
+    <PreviewDownload
+      :createDownloadUrl="createDownloadUrl"
+      :downloadUrl="downloadUrl"
+      :fileInfo="fileInfo"
+      v-if="fileInfo.fileCategory == 5 && fileInfo.fileType != 8"
+    ></PreviewDownload>
   </Window>
 </template>
 
 <script setup>
+import PreviewDownload from './PreviewDownload.vue'
+import PreviewMusic from './PreviewMusic.vue'
 import PreviewTxt from './PreviewTxt.vue'
 import PreviewPdf from './PreviewPdf.vue'
 import PreviewExcel from './PreviewExcel.vue'
@@ -58,6 +71,9 @@ const FILE_URL_MAP = {
   },
 }
 const url = ref(null)
+// 无法判断文件类型下载文件
+const createDownloadUrl = ref(null)
+const downloadUrl = ref(null)
 const fileInfo = ref({})
 const imageViewRef = ref()
 const showPreview = (data, showPart) => {
@@ -69,13 +85,18 @@ const showPreview = (data, showPart) => {
   } else {
     windowShow.value = true
     let _url = FILE_URL_MAP[showPart].fileUrl
+    let _createDownloadUrl = FILE_URL_MAP[showPart].createDownloadUrl
+    let _downloadUrl = FILE_URL_MAP[showPart].downloadUrl
     if (data.fileCategory == 1) {
       _url = FILE_URL_MAP[showPart].videoUrl
     }
     if (showPart == 0) {
       _url = _url + '/' + data.fileId
+      _createDownloadUrl = _createDownloadUrl + '/' + data.fileId
     }
     url.value = _url
+    createDownloadUrl.value = _createDownloadUrl
+    downloadUrl.value = _downloadUrl
   }
 }
 defineExpose({ showPreview })
