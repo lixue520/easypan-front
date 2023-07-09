@@ -15,10 +15,12 @@
     <PreviewVideo :url="url" v-if="fileInfo.fileCategory == 1"></PreviewVideo>
     <PreviewDoc :url="url" v-if="fileInfo.fileType == 5"></PreviewDoc>
     <PreviewExcel :url="url" v-if="fileInfo.fileType == 6"></PreviewExcel>
+    <PreviewPdf :url="url"  v-if="fileInfo.fileType == 4"></PreviewPdf>
   </Window>
 </template>
 
 <script setup>
+import PreviewPdf from './PreviewPdf.vue';
 import PreviewExcel from './PreviewExcel.vue';
 import PreviewDoc from './PreviewDoc.vue';
 import PreviewVideo from './PreviewVideo.vue'

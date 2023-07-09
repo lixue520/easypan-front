@@ -136,7 +136,7 @@ const STATUS = {
   },
   upload_seconds: {
     value: 'upload_seconds',
-    desc: '妙传',
+    desc: '秒传',
     color: '#b7c23a',
     icon: 'ok',
   },
