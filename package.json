@@ -17,6 +17,7 @@
     "dplayer": "^1.27.1",
     "element-plus": "^2.3.7",
     "highlight.js": "^11.8.0",
+    "hls.js": "^1.4.8",
     "js-md5": "^0.7.3",
     "sass": "^1.63.6",
     "sass-loader": "^13.3.2",

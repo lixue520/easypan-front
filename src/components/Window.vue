@@ -42,7 +42,7 @@ const windowContentWidth = computed(() => {
 })
 const windowContentLeft = computed(() => {
   let left = windowWidth.value - props.width
-  return left < 0 ? 0 : left /2
+  return left < 0 ? 0 : left / 2
 })
 const emit = defineEmits(['close'])
 const close = () => {
@@ -79,7 +79,9 @@ onUnmounted(() => {
     top: 40px;
     right: 30px;
     height: 44px;
-    border-radius: 22px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     background: #606266;
     display: flex;
     justify-content: center;
