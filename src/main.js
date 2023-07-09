@@ -9,6 +9,10 @@ import '@/assets/icon/iconfont.css'
 import '@/assets/base.scss'
 // 引入cookie
 import VueCookies from 'vue-cookies'
+// 引入代码高亮
+import HljsVuePlugin from '@highlightjs/vue-plugin'
+import 'highlight.js/styles/atom-one-light.css'
+import 'highlight.js/lib/common'
 // 自定义组件
 import Dialog from '@/components/Dialog.vue'
 import Avatar from '@/components/Avatar.vue'
@@ -28,7 +32,7 @@ import Utils from '@/utils/Utils.js'
 const app = createApp(App)
 app.use(router)
 app.use(ElementPlus)
-
+app.use(HljsVuePlugin)
 app.component('Dialog', Dialog)
 app.component('Avatar', Avatar)
 app.component('Table',Table)

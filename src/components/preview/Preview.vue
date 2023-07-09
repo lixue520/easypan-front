@@ -15,14 +15,16 @@
     <PreviewVideo :url="url" v-if="fileInfo.fileCategory == 1"></PreviewVideo>
     <PreviewDoc :url="url" v-if="fileInfo.fileType == 5"></PreviewDoc>
     <PreviewExcel :url="url" v-if="fileInfo.fileType == 6"></PreviewExcel>
-    <PreviewPdf :url="url"  v-if="fileInfo.fileType == 4"></PreviewPdf>
+    <PreviewPdf :url="url" v-if="fileInfo.fileType == 4"></PreviewPdf>
+    <PreviewTxt :url="url" v-if="fileInfo.fileType == 7 || fileInfo.fileType == 8"></PreviewTxt>
   </Window>
 </template>
 
 <script setup>
-import PreviewPdf from './PreviewPdf.vue';
-import PreviewExcel from './PreviewExcel.vue';
-import PreviewDoc from './PreviewDoc.vue';
+import PreviewTxt from './PreviewTxt.vue'
+import PreviewPdf from './PreviewPdf.vue'
+import PreviewExcel from './PreviewExcel.vue'
+import PreviewDoc from './PreviewDoc.vue'
 import PreviewVideo from './PreviewVideo.vue'
 import PreviewImage from './PreviewImage.vue'
 import { ref, reactive, getCurrentInstance, nextTick, computed } from 'vue'
@@ -73,7 +75,7 @@ const showPreview = (data, showPart) => {
     if (showPart == 0) {
       _url = _url + '/' + data.fileId
     }
-    url.value=_url
+    url.value = _url
   }
 }
 defineExpose({ showPreview })
