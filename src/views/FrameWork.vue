@@ -92,7 +92,7 @@
       <div class="body-content">
         <!-- 将子路由定义为组件，否则子路由调用父路由的内容没法调用 -->
         <router-view v-slot="{ Component }">
-          <component ref="routerViewRef" :is="Component" @addFile="addFile"></component>
+          <component ref="routerViewRef" :is="Component" @addFile="addFile" @reload="reload"></component>
         </router-view>
       </div>
     </div>
@@ -290,6 +290,10 @@ const getUserSpace = async () => {
   useSpaceInfo.value = result.data
 }
 getUserSpace()
+// 回收站还原和删除文件回调用户空间
+const reload=()=>{
+  getUserSpace()
+}
 </script>
 <style lang="scss" scoped>
 .header {

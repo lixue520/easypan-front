@@ -1,6 +1,6 @@
 <template>
   <div class="top">
-    <el-button type="primary" :disabled="selectFileIdList==0" @click="cancelShareBatch">
+    <el-button type="primary" :disabled="selectShareIdList == 0" @click="cancelShareBatch">
       <span class="iconfont icon-cancel"></span>取消分享
     </el-button>
   </div>
@@ -20,8 +20,8 @@
             <Icon :cover="row.fileCover"></Icon>
           </template>
           <template v-else>
-            <Icon v-if="row.fileType == 0" :fileType="row.fileType"></Icon>
-            <Icon v-if="row.fileType == 1" :fileType="0"></Icon>
+            <Icon v-if="row.folderType == 0" :fileType="row.fileType"></Icon>
+            <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
           </template>
           <span class="file-name" :title="row.fileName">{{ row.fileName }}</span>
           <span class="op">
@@ -92,11 +92,11 @@ const loadDataList = async () => {
   tableData.value = result.data
 }
 // 多选
-const selectFileIdList = ref([])
+const selectShareIdList = ref([])
 const rowSelected = (rows) => {
-  selectFileIdList.value = []
+  selectShareIdList.value = []
   rows.forEach((item) => {
-    selectFileIdList.value.push(item.shareId)
+    selectShareIdList.value.push(item.shareId)
   })
 }
 const showOp = (row) => {
@@ -111,35 +111,32 @@ const cancelShowOp = (row) => {
 
 const shareUrl = ref(document.location.origin + '/share/')
 const copy = async (row) => {
-  await toClipboard(
-    `链接:${shareUrl.value}${row.shareId} 提取码:${row.code}`,
-  )
+  await toClipboard(`链接:${shareUrl.value}${row.shareId} 提取码:${row.code}`)
   proxy.Message.success('复制成功')
 }
 // 取消分享
-const cancelShareIdList=ref([])
+const cancelShareIdList = ref([])
 const cancelShareBatch = () => {
-  if(selectFileIdList.value.length==0){
+  if (selectShareIdList.value.length == 0) {
     return
   }
-  cancelShareIdList.value=selectFileIdList.value
+  cancelShareIdList.value = selectShareIdList.value
   cancelShareDone()
 }
-const cancelShare=(row)=>{
-  console.log(row)
-  cancelShareIdList.value=[row.shareId]
+const cancelShare = (row) => {
+  cancelShareIdList.value = [row.shareId]
   cancelShareDone()
 }
-const cancelShareDone=()=>{
-  proxy.Confirm('你确定要取消分享吗?',async()=>{
+const cancelShareDone = () => {
+  proxy.Confirm('你确定要取消分享吗?', async () => {
     let result = await proxy.Request({
-       url:api.cancelShare,
-       params:{
-        shareIds:cancelShareIdList.value.join()
-       }
+      url: api.cancelShare,
+      params: {
+        shareIds: cancelShareIdList.value.join(),
+      },
     })
-    if(!result){
-      return;
+    if (!result) {
+      return
     }
     proxy.Message.success('取消分享成功')
     loadDataList()
