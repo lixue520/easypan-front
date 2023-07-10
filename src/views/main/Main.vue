@@ -15,7 +15,7 @@
           </el-button>
         </el-upload>
       </div>
-      <el-button type="success" @click="newFolder" v-if="category=='all'">
+      <el-button type="success" @click="newFolder" v-if="category == 'all'">
         <span class="iconfont icon-folder-add"></span>
         新建文件夹
       </el-button>
@@ -43,99 +43,96 @@
     </div>
     <!-- 导航 -->
     <Navigation ref="navigationref" @navChange="navChange"></Navigation>
-    <div class="file-list" v-if="tableData.list && tableData.list.length > 0">
-      <Table
-        ref="dataTableRef"
-        :columns="columns"
-        :dataSource="tableData"
-        :fetch="loadDataList"
-        :initFetch="false"
-        :options="tableOptions"
-        @rowSelected="rowSelected"
-      >
-        <template #fileName="{ index, row }">
-          <div class="file-item" @mouseenter="showOP(row)" @mouseleave="cancelShowOp(row)">
-            <template v-if="(row.fileType == 3 || row.fileType == 1) && row.status == 2">
-              <Icon :cover="row.fileCover" :width="32"></Icon>
-            </template>
-            <template v-else>
-              <Icon v-if="row.folderType == 0" :fileType="row.fileType"></Icon>
-              <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
-            </template>
-            <span class="file-name" v-if="!row.showEdit" :title="row.fileName">
-              <span @click="preview(row)">{{ row.fileName }}</span>
-              <span v-if="row.status == 0" class="transfer-status">转码中</span>
-              <span v-if="row.status == 1" class="transfer-status transfer-fail">转码失败</span>
-            </span>
-            <div class="edit-panel" v-if="row.showEdit">
-              <el-input
-                v-model.trim="row.fileNameReal"
-                ref="editNameRef"
-                :maxLength="190"
-                @keyup.enter="saveNameEdit(index)"
-              >
-                <template #suffix>{{ row.fileSuffix }}</template>
-              </el-input>
-              <span
-                :class="['iconfont icon-right1', row.fileNameReal ? '' : 'no-allow']"
-                @click="saveNameEdit(index)"
-              ></span>
-              <span class="iconfont icon-error" @click="cancelNameEdit(index)"></span>
-            </div>
-            <span class="op">
-              <template v-if="row.showOp && row.fileId && row.status == 2">
-                <span class="iconfont icon-share1" @click="share(row)">分享</span>
-                <span
-                  class="iconfont icon-download"
-                  v-if="row.folderType == 0"
-                  @click="download(row)"
-                  >下载
-                </span>
-                <span class="iconfont icon-del" @click="delFile(row)">删除</span>
-                <span class="iconfont icon-edit" @click="editFileName(index)">重命名</span>
-                <span class="iconfont icon-move" @click="moveFolder(row)">移动</span>
-              </template>
-            </span>
+  </div>
+  <div class="file-list" v-if="tableData.list && tableData.list.length > 0">
+    <Table
+      ref="dataTableRef"
+      :columns="columns"
+      :dataSource="tableData"
+      :fetch="loadDataList"
+      :initFetch="false"
+      :options="tableOptions"
+      @rowSelected="rowSelected"
+    >
+      <template #fileName="{ index, row }">
+        <div class="file-item" @mouseenter="showOP(row)" @mouseleave="cancelShowOp(row)">
+          <template v-if="(row.fileType == 3 || row.fileType == 1) && row.status == 2">
+            <Icon :cover="row.fileCover" :width="32"></Icon>
+          </template>
+          <template v-else>
+            <Icon v-if="row.folderType == 0" :fileType="row.fileType"></Icon>
+            <Icon v-if="row.folderType == 1" :fileType="0"></Icon>
+          </template>
+          <span class="file-name" v-if="!row.showEdit" :title="row.fileName">
+            <span @click="preview(row)">{{ row.fileName }}</span>
+            <span v-if="row.status == 0" class="transfer-status">转码中</span>
+            <span v-if="row.status == 1" class="transfer-status transfer-fail">转码失败</span>
+          </span>
+          <div class="edit-panel" v-if="row.showEdit">
+            <el-input
+              v-model.trim="row.fileNameReal"
+              ref="editNameRef"
+              :maxLength="190"
+              @keyup.enter="saveNameEdit(index)"
+            >
+              <template #suffix>{{ row.fileSuffix }}</template>
+            </el-input>
+            <span
+              :class="['iconfont icon-right1', row.fileNameReal ? '' : 'no-allow']"
+              @click="saveNameEdit(index)"
+            ></span>
+            <span class="iconfont icon-error" @click="cancelNameEdit(index)"></span>
           </div>
-        </template>
-        <template #fileSize="{ index, row }">
-          <span v-if="row.fileSize">{{ Utils.sizeToStr(row.fileSize) }}</span>
-        </template>
-      </Table>
-    </div>
-    <div v-else class="no-data">
-      <div class="no-data-inner">
-        <Icon iconName="no_data" :width="120" fit="fill"></Icon>
-        <div class="tips">当前目录为空，上传你的第一个文件吧</div>
-        <div class="op-list">
-          <el-upload
-            :show-file-list="false"
-            :width-credentials="true"
-            :multiple="true"
-            :http-request="addFile"
-            :accept="fileAccept"
-          >
-            <div class="op-item">
-              <Icon iconName="file" :width="60"></Icon>
-              <div>上传文件</div>
-            </div>
-          </el-upload>
-          <div class="op-item" v-if="category == 'all'" @click="newFolder">
-            <Icon iconName="folder" :width="60"></Icon>
-            <div>新建目录</div>
+          <span class="op">
+            <template v-if="row.showOp && row.fileId && row.status == 2">
+              <span class="iconfont icon-share1" @click="share(row)">分享</span>
+              <span class="iconfont icon-download" v-if="row.folderType == 0" @click="download(row)"
+                >下载
+              </span>
+              <span class="iconfont icon-del" @click="delFile(row)">删除</span>
+              <span class="iconfont icon-edit" @click="editFileName(index)">重命名</span>
+              <span class="iconfont icon-move" @click="moveFolder(row)">移动</span>
+            </template>
+          </span>
+        </div>
+      </template>
+      <template #fileSize="{ index, row }">
+        <span v-if="row.fileSize">{{ Utils.sizeToStr(row.fileSize) }}</span>
+      </template>
+    </Table>
+  </div>
+  <div v-else class="no-data">
+    <div class="no-data-inner">
+      <Icon iconName="no_data" :width="120" fit="fill"></Icon>
+      <div class="tips">当前目录为空，上传你的第一个文件吧</div>
+      <div class="op-list">
+        <el-upload
+          :show-file-list="false"
+          :width-credentials="true"
+          :multiple="true"
+          :http-request="addFile"
+          :accept="fileAccept"
+        >
+          <div class="op-item">
+            <Icon iconName="file" :width="60"></Icon>
+            <div>上传文件</div>
           </div>
+        </el-upload>
+        <div class="op-item" v-if="category == 'all'" @click="newFolder">
+          <Icon iconName="folder" :width="60"></Icon>
+          <div>新建目录</div>
         </div>
       </div>
     </div>
-    <FoldersSelect ref="foldersSelectRef" @folderSelect="moveFolderDone"></FoldersSelect>
-    <!-- 预览 -->
-    <Preview ref="previewRef"></Preview>
-    <ShareFile ref="shareRef"></ShareFile>
   </div>
+  <FoldersSelect ref="foldersSelectRef" @folderSelect="moveFolderDone"></FoldersSelect>
+  <!-- 预览 -->
+  <Preview ref="previewRef"></Preview>
+  <ShareFile ref="shareRef"></ShareFile>
 </template>
 
 <script setup>
-import ShareFile from './ShareFile.vue';
+import ShareFile from './ShareFile.vue'
 import CategoryInfo from '@/js/CategoryInfo.js'
 import { ref, reactive, getCurrentInstance, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -425,8 +422,8 @@ const download = async (row) => {
 }
 
 // 分享
-const shareRef=ref()
-const share=(row)=>{
+const shareRef = ref()
+const share = (row) => {
   shareRef.value.show(row)
 }
 </script>

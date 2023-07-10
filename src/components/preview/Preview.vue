@@ -5,7 +5,7 @@
     v-if="fileInfo.fileCategory == 3"
   ></PreviewImage>
   <Window
-    v-else
+    v-else-if="fileInfo.folderType != 1"
     :show="windowShow"
     @close="closeWindow"
     :width="fileInfo.fileCategory == 1 ? 1500 : 1000"
