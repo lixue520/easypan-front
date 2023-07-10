@@ -85,7 +85,12 @@
             <span class="op">
               <template v-if="row.showOp && row.fileId && row.status == 2">
                 <span class="iconfont icon-share1">分享</span>
-                <span class="iconfont icon-download" v-if="row.folderType == 0">下载</span>
+                <span
+                  class="iconfont icon-download"
+                  v-if="row.folderType == 0"
+                  @click="download(row)"
+                  >下载
+                </span>
                 <span class="iconfont icon-del" @click="delFile(row)">删除</span>
                 <span class="iconfont icon-edit" @click="editFileName(index)">重命名</span>
                 <span class="iconfont icon-move" @click="moveFolder(row)">移动</span>
@@ -386,7 +391,7 @@ const moveFolderDone = async (folderId) => {
   loadDataList()
 }
 // 预览
-const previewRef=ref()
+const previewRef = ref()
 const navigationref = ref()
 const preview = (data) => {
   if (data.folderType == 1) {
@@ -397,7 +402,7 @@ const preview = (data) => {
     proxy.Message.warning('文件未完成转码，无法预览')
     return
   }
-  previewRef.value.showPreview(data,0)
+  previewRef.value.showPreview(data, 0)
 }
 
 const navChange = (data) => {
@@ -405,6 +410,16 @@ const navChange = (data) => {
   category.value = categoryId
   currentFolder.value = curFolder
   loadDataList()
+}
+// 下载
+const download = async (row) => {
+  let result = await proxy.Request({
+    url: api.createDownloadUrl + '/' + row.fileId,
+  })
+  if (!result) {
+    return
+  }
+  window.location.href = api.downLoad + '/' + result.data
 }
 </script>
 

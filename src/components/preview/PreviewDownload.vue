@@ -36,7 +36,6 @@ const download = async () => {
   if (!result) {
     return
   }
-  console.log(result)
   window.location.href = props.downloadUrl + '/' + result.data
 }
 </script>
