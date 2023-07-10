@@ -125,6 +125,7 @@ const share = async () => {
 const show = (data) => {
   showType.value = 0
   dialogConfig.value.show = true
+  dialogConfig.value.buttons[0].text = '确定'
   showCancel.value = true
   resultInfo.value = {}
   nextTick(() => {
@@ -134,7 +135,9 @@ const show = (data) => {
 }
 defineExpose({ show })
 const copy = async () => {
-  await toClipboard(`链接:${shareUrl.value}${resultInfo.value.shareId} 提取码:${resultInfo.value.code}`)
+  await toClipboard(
+    `链接:${shareUrl.value}${resultInfo.value.shareId} 提取码:${resultInfo.value.code}`,
+  )
   proxy.Message.success('复制成功')
 }
 </script>
