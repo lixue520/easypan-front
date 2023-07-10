@@ -15,7 +15,7 @@
           </el-button>
         </el-upload>
       </div>
-      <el-button type="success" @click="newFolder">
+      <el-button type="success" @click="newFolder" v-if="category=='all'">
         <span class="iconfont icon-folder-add"></span>
         新建文件夹
       </el-button>
@@ -84,7 +84,7 @@
             </div>
             <span class="op">
               <template v-if="row.showOp && row.fileId && row.status == 2">
-                <span class="iconfont icon-share1">分享</span>
+                <span class="iconfont icon-share1" @click="share(row)">分享</span>
                 <span
                   class="iconfont icon-download"
                   v-if="row.folderType == 0"
@@ -130,10 +130,12 @@
     <FoldersSelect ref="foldersSelectRef" @folderSelect="moveFolderDone"></FoldersSelect>
     <!-- 预览 -->
     <Preview ref="previewRef"></Preview>
+    <ShareFile ref="shareRef"></ShareFile>
   </div>
 </template>
 
 <script setup>
+import ShareFile from './ShareFile.vue';
 import CategoryInfo from '@/js/CategoryInfo.js'
 import { ref, reactive, getCurrentInstance, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -420,6 +422,12 @@ const download = async (row) => {
     return
   }
   window.location.href = api.downLoad + '/' + result.data
+}
+
+// 分享
+const shareRef=ref()
+const share=(row)=>{
+  shareRef.value.show(row)
 }
 </script>
 
