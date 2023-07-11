@@ -175,7 +175,7 @@ const menus = [
     ],
   },
   {
-    path: '/share',
+    path: '/myshare',
     icon: 'share',
     name: '分享',
     allShow: true,
@@ -183,7 +183,7 @@ const menus = [
     children: [
       {
         name: '分享记录',
-        path: '/share',
+        path: '/myshare',
       },
     ],
   },

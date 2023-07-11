@@ -28,8 +28,8 @@ const router = createRouter({
           },
           component:()=>import('@/views/main/Main.vue')
         },{
-          path:'/share',
-          name:'分享',
+          path:'/myshare',
+          name:'我的分享',
           meta:{
             needLogin:true,
             menuCode:'share'
@@ -70,6 +70,14 @@ const router = createRouter({
           component:()=>import('@/views/admin/FileList.vue')
         },
       ]
+    },{
+      path:'/shareCheck/:shareId',
+      name:'分享校验',
+      component:()=>import('@/views/webShare/ShareCheck.vue')
+    },{
+      path:'/share/:shareId',
+      name:'分享',
+      component:()=>import('@/views/webShare/Share.vue')
     }
   ]
 })

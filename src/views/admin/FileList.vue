@@ -33,7 +33,7 @@
       @rowSelected="rowSelected"
     >
       <template #fileName="{ index, row }">
-        <div class="file-item" @mouseenter="showOP(row)" @mouseleave="cancelShowOp(row)">
+        <div class="file-item" @mouseenter="showOp(row)" @mouseleave="cancelShowOp(row)">
           <template v-if="(row.fileType == 3 || row.fileType == 1) && row.status == 2">
             <Icon :cover="row.fileCover" :width="32"></Icon>
           </template>
@@ -46,21 +46,6 @@
             <span v-if="row.status == 0" class="transfer-status">转码中</span>
             <span v-if="row.status == 1" class="transfer-status transfer-fail">转码失败</span>
           </span>
-          <div class="edit-panel" v-if="row.showEdit">
-            <el-input
-              v-model.trim="row.fileNameReal"
-              ref="editNameRef"
-              :maxLength="190"
-              @keyup.enter="saveNameEdit(index)"
-            >
-              <template #suffix>{{ row.fileSuffix }}</template>
-            </el-input>
-            <span
-              :class="['iconfont icon-right1', row.fileNameReal ? '' : 'no-allow']"
-              @click="saveNameEdit(index)"
-            ></span>
-            <span class="iconfont icon-error" @click="cancelNameEdit(index)"></span>
-          </div>
           <span class="op">
             <template v-if="row.showOp && row.fileId && row.status == 2">
               <span class="iconfont icon-download" v-if="row.folderType == 0" @click="download(row)"
@@ -87,7 +72,7 @@ const api = {
   loadDataList: '/admin/loadFileList',
   delFile: '/admin/delFile',
   createDownloadUrl: '/admin/createDownloadUrl',
-  downLoad: '/api/admin/download',
+  download: '/api/admin/download',
 }
 const columns = [
   {
@@ -151,14 +136,14 @@ const loadDataList = async () => {
   tableData.value = result.data
 }
 // 展示操作按钮
-const showOP = (row) => {
+const showOp = (row) => {
   tableData.value.list.forEach((item) => {
     item.showOp = false
   })
   row.showOp = true
 }
 const cancelShowOp = (row) => {
-  row.showOP = false
+  row.showOp = false
 }
 // 预览
 const previewRef = ref()
@@ -221,7 +206,7 @@ const download = async (row) => {
   if (!result) {
     return
   }
-  window.location.href = api.downLoad + '/' + result.data
+  window.location.href = api.download + '/' + result.data
 }
 </script>
 

@@ -8,7 +8,7 @@
               clearable
               placeholder="支持模糊搜索"
               v-model.trim="searchformData.nickNameFuzzy"
-              @keyup.native="loadDataList"
+              @keyup.enter="loadDataList"
             ></el-input>
           </el-form-item>
         </el-col>
