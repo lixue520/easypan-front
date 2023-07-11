@@ -63,7 +63,7 @@ const FILE_URL_MAP = {
     createDownloadUrl: '/admin/createDownloadUrl',
     downloadUrl: '/api/admin/download',
   },
-  1: {
+  2: {
     fileUrl: '/showShare/getFile',
     videoUrl: '/showShare/ts/getVideoInfo',
     createDownloadUrl: '/showShare/createDownloadUrl',
@@ -93,6 +93,9 @@ const showPreview = (data, showPart) => {
     if (showPart == 0) {
       _url = _url + '/' + data.fileId
       _createDownloadUrl = _createDownloadUrl + '/' + data.fileId
+    } else if (showPart == 1) {
+      _url = _url + '/' + data.userId + '/' + data.fileId
+      _createDownloadUrl = _createDownloadUrl + '/' + data.userId + '/' + data.fileId
     }
     url.value = _url
     createDownloadUrl.value = _createDownloadUrl
