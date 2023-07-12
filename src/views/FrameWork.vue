@@ -47,14 +47,16 @@
     <div class="body">
       <div class="left-sider">
         <div class="menu-list">
-          <div
-            :class="['menu-item', item.menuCode == currenMenu.menuCode ? 'active' : '']"
-            v-for="item in menus"
-            @click="jump(item)"
-          >
-            <div :class="['iconfont', 'icon-' + item.icon]"></div>
-            <div class="text">{{ item.name }}</div>
-          </div>
+          <template v-for="item in menus">
+            <div
+              v-if="item.allShow"
+              :class="['menu-item', item.menuCode == currenMenu.menuCode ? 'active' : '']"
+              @click="jump(item)"
+            >
+              <div :class="['iconfont', 'icon-' + item.icon]"></div>
+              <div class="text">{{ item.name }}</div>
+            </div>
+          </template>
         </div>
         <div class="menu-sub-list">
           <div
@@ -92,7 +94,12 @@
       <div class="body-content">
         <!-- 将子路由定义为组件，否则子路由调用父路由的内容没法调用 -->
         <router-view v-slot="{ Component }">
-          <component ref="routerViewRef" :is="Component" @addFile="addFile" @reload="reload"></component>
+          <component
+            ref="routerViewRef"
+            :is="Component"
+            @addFile="addFile"
+            @reload="reload"
+          ></component>
         </router-view>
       </div>
     </div>
@@ -291,7 +298,7 @@ const getUserSpace = async () => {
 }
 getUserSpace()
 // 回收站还原和删除文件回调用户空间
-const reload=()=>{
+const reload = () => {
   getUserSpace()
 }
 </script>
